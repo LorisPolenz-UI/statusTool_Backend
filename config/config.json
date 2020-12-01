@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "tawohuna_devLor",
+    "password": "8SfxQzq1",
+    "database": "tawohuna_randomBackendStuff",
+    "host": "tawohuna.mysql.db.hostpoint.ch",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  },
+  "test": {
+    "username": "tawohuna_devLor",
+    "password": "8SfxQzq1",
+    "database": "tawohuna_randomBackendStuff",
+    "host": "tawohuna.mysql.db.hostpoint.ch",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  },
+  "production": {
+    "username": "tawohuna_devLor",
+    "password": "8SfxQzq1",
+    "database": "tawohuna_randomBackendStuff",
+    "host": "tawohuna.mysql.db.hostpoint.ch",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  }
+}
