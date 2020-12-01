@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
-module.exports = new Sequelize('tawohuna_randomBackendStuff', 'tawohuna_devLor', process.env.DB_PASSWORD, {
-  host: 'tawohuna.mysql.db.hostpoint.ch',
+module.exports = new Sequelize( process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
   dialect: 'mysql',
   pool: {
     max: 5,
