@@ -4,29 +4,52 @@ const Sequelize = require('sequelize');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const e = require('express');
 
 
 
 
-function ValidateEmail(mail) {
-    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail)) {
-        console.log("Valid E-Mail entered");
-        return true;
-    } else {
-        console.log("Not valid E-Mail entered");
+function IsValidEmail(email) {
+    console.log("Mail: " + email)
+    //Check minimum valid length of an Email.
+    if (email.length <= 2) {
         return false;
     }
-}
+    //If whether email has @ character.
+    if (email.indexOf("@") == -1) {
+        return false;
+    }
 
-function ValidatePassword(password) {
+    var parts = email.split("@");
+    var dot = parts[1].indexOf(".");
+    var len = parts[1].length;
+    var dotSplits = parts[1].split(".");
+    var dotCount = dotSplits.length - 1;
 
-}
+
+    //Check whether Dot is present, and that too minimum 1 character after @.
+    if (dot == -1 || dot < 2 || dotCount > 2) {
+        return false;
+    }
+
+    //Check whether Dot is not the last character and dots are not repeated.
+    for (var i = 0; i < dotSplits.length; i++) {
+        if (dotSplits[i].length == 0) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+
 
 function ValidateInput (mail, password) {
-    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail)) {
-        console.log(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail))
+    if (IsValidEmail(mail) != true) {
+        console.log(IsValidEmail(mail))
         return true;
     } else if (password.length > 10) {
+        console.log(password.length)
         return true;
     } else {
         return false;
@@ -37,7 +60,8 @@ function ValidateInput (mail, password) {
 
 
 module.exports.signup = (req, res) => {
-    if (ValidateInput(req.body.mail, req.body.password) != true) {
+    if (ValidateInput(req.body.email, req.body.password) === true) {
+            console.log("inpit " + ValidateInput(req.body.email, req.body.password))
             res.status(300).send({
                 message: "E-Mail or password are invalid"
             })
@@ -120,8 +144,7 @@ module.exports.signin = (req, res) =>
                         })
                     }
                     if (result) {
-                        const token = jwt.sign(
-                            {
+                        const token = jwt.sign({
                                 email: user.email,
                                 id: user.id
                             },
@@ -150,3 +173,4 @@ module.exports.signin = (req, res) =>
                 error: err
             })
         })
+ 
