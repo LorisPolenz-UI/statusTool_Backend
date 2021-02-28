@@ -4,6 +4,8 @@ const app = express();
 const secureRoute = express();
 const Sequelize = require('sequelize');
 require('dotenv').config();
+const { check, validationResult } = require('express-validator');
+const user = require('./models/user');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -21,6 +23,8 @@ app.use(function (req, res, next) {
 //Routes
 let routeStatus = require('./routes/routStatus.js');
 let routeUser = require('./routes/user.js');
+let routeValidate = require('./config/validate.js');
+//let checkMail = routeValidate.checkMail;
 
 
 //config status
@@ -32,8 +36,25 @@ app.post('/statuspost', checkAuth, routeStatus.crstatus);
 
 
 //user / auth
-app.post('/signup', routeUser.signup);
-app.post('/signin', routeUser.signin);
+app.post('/auth/register', [
+  check('email').isEmail().normalizeEmail().escape().custom(value => {
+    return routeValidate.checkMail(value).then(user => {
+      if (user) {
+        return Promise.reject('E-mail already in use !!!');
+      }
+    });
+  }),
+  check('password').isLength({min: 13}).escape()
+], routeUser.register);
+
+
+app.post('/auth/signin', [
+  check('email').isEmail().normalizeEmail().escape(),
+  check('password').isLength({min: 13}).escape()
+], routeUser.signin);
+
+
+
 
 
 //EXPRESS
